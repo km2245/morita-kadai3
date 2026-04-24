@@ -6,13 +6,12 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     *
-     * @return void
-     */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        // ユーザー情報を作成
+        $this->call(UserSeeder::class);
+
+        // 勤怠・休憩データを作成
+        $this->call(AttendanceSeeder::class);
     }
 }
