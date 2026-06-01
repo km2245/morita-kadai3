@@ -3,48 +3,63 @@
     font-size: 14px;
     margin-top: 5px;
 }
+
+
+/* ヘッダー全体 */
 .header {
     background: #000;
+    height: 80px;
 }
 
+/* 横幅 */
 .header__inner {
+    max-width: 1512px;
     margin: 0 auto;
-    padding: 20px 15px;
-    max-width: 1230px;
+    padding: 0 30px;
+    height: 100%;
 }
 
+/* ロゴと右メニュー */
 .header-utilities {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
+    height: 100%;
 }
 
-.header__logo {
-    color: #fff;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 24px;
+/* ロゴ */
+.header__logo img {
+    width: 370px;
 }
 
-.header-utilities nav {
-    width: 18%;
-}
-
+/* nav */
 .header-nav {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 40px;
+
+    list-style: none;
 }
 
+/* リンク */
 .header-nav__link {
     color: #fff;
+
+    font-size: 24px;
+    font-weight: 700;
+
     text-decoration: none;
 }
 
+/* logoutボタン */
 .header-nav__button {
     border: none;
     background: transparent;
+
     color: #fff;
-    font-size: 16px;
+
+    font-size: 24px;
+    font-weight: 700;
+
     cursor: pointer;
 }

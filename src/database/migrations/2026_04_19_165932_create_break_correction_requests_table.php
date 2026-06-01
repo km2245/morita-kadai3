@@ -32,10 +32,6 @@ class CreateBreakCorrectionRequestsTable extends Migration
 
             $table->time('after_end_time');
 
-            $table->text('reason');
-
-            $table->string('status');
-
             $table->timestamps();
         });
     }

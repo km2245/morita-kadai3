@@ -1,43 +1,98 @@
 @extends('layouts.app')
 
+@section('css')
+<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+@endsection
+
 @section('content')
 
-<h1>管理者 申請一覧</h1>
+<div class="admin">
 
-<table border="1">
-    <tr>
-        <th>名前</th>
-        <th>日付</th>
-        <th>理由</th>
-        <th>ステータス</th>
-        <th>詳細</th>
-    </tr>
+    {{-- タイトル --}}
+    <div class="attendance-list__title">
 
-    @foreach ($requests as $request)
-    <tr>
+        <div class="attendance-list__line"></div>
 
-        {{-- 申請したユーザー名 --}}
-        <td>{{ optional($request->user)->name }}</td>
+        <h1>申請一覧</h1>
 
-        {{-- 対象の勤怠日 --}}
-        <td>{{ optional($request->attendance)->date }}</td>
+    </div>
 
-        {{-- 修正理由 --}}
-        <td>{{ $request->reason }}</td>
+    {{-- タブ --}}
+    <div class="request-list__tabs">
 
-        {{-- 承認状態 --}}
-        <td>{{ $request->status }}</td>
+        <a
+            href="{{ route('admin.request.list', ['tab' => 'pending']) }}"
+            class="{{ $tab === 'pending' ? 'active' : '' }}">
 
-        {{-- 詳細画面（次で作る） --}}
-        <td>
-            <a href="{{ route('admin.request.approve', $request->id) }}">
-                詳細
-            </a>
-        </td>
+            承認待ち
 
-    </tr>
-    @endforeach
+        </a>
 
-</table>
+        <a
+            href="{{ route('admin.request.list', ['tab' => 'approved']) }}"
+            class="{{ $tab === 'approved' ? 'active' : '' }}">
+
+            承認済み
+
+        </a>
+
+    </div>
+
+    {{-- テーブル --}}
+    <table class="staff-table">
+
+        <tr>
+
+            <th>状態</th>
+            <th>名前</th>
+            <th>対象日時</th>
+            <th>申請理由</th>
+            <th>申請日時</th>
+            <th>詳細</th>
+
+        </tr>
+
+        @foreach ($requests as $request)
+
+        <tr>
+
+            <td>
+                {{ $request->status === 'pending' ? '承認待ち' : '承認済み' }}
+            </td>
+
+            <td>
+                {{ optional($request->user)->name }}
+            </td>
+
+            <td>
+                {{ optional($request->attendance)->date }}
+            </td>
+
+            <td>
+                {{ $request->reason }}
+            </td>
+
+            <td>
+                {{ \Carbon\Carbon::parse($request->created_at)->format('Y/m/d') }}
+            </td>
+
+            <td>
+
+                <a
+                    href="{{ route('admin.request.approve', $request->id) }}">
+
+                    詳細
+
+                </a>
+
+            </td>
+
+        </tr>
+
+        @endforeach
+
+    </table>
+
+</div>
 
 @endsection

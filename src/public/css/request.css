@@ -1,0 +1,107 @@
+body {
+    background: #F0EFF2;
+}
+
+/* 全体 */
+.request-list {
+    width: 900px;
+    margin: 70px auto;
+}
+
+/* タイトル */
+.request-list__title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    margin-bottom: 50px;
+}
+
+/* 左線 */
+.request-list__line {
+    width: 8px;
+    height: 40px;
+
+    background: #000;
+}
+
+/* タイトル文字 */
+.request-list__title h1 {
+    font-size: 30px;
+    font-weight: 700;
+}
+
+/* タブ */
+.request-list__tabs {
+    display: flex;
+    gap: 60px;
+
+    border-bottom: 1px solid #000;
+
+    padding-bottom: 15px;
+    margin-bottom: 50px;
+}
+
+/* タブ文字 */
+.request-list__tabs a {
+    text-decoration: none;
+
+    color: #737373;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* active */
+.request-list__tabs a.active {
+    color: #000;
+}
+
+/* テーブル */
+.request-table {
+    width: 900px;
+
+    background: #fff;
+
+    border-radius: 10px;
+
+    border-collapse: collapse;
+    overflow: hidden;
+}
+
+/* ヘッダー */
+.request-table th {
+    height: 60px;
+
+    border-bottom: 2px solid #E1E1E1;
+
+    color: #737373;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    text-align: center;
+}
+
+/* 中身 */
+.request-table td {
+    height: 60px;
+
+    border-bottom: 1px solid #E1E1E1;
+
+    text-align: center;
+
+    color: #737373;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* 詳細 */
+.request-table td:last-child a {
+    text-decoration: none;
+
+    color: #000;
+
+    font-weight: 700;
+}

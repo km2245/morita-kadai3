@@ -1,0 +1,226 @@
+body {
+    background: #F0EFF2;
+}
+
+/* 全体 */
+.staff-list {
+    width: 900px;
+    margin: 70px auto;
+}
+
+/* タイトル */
+.staff-list__title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    margin-bottom: 50px;
+}
+
+/* 左線 */
+.staff-list__line {
+    width: 8px;
+    height: 40px;
+
+    background: #000;
+}
+
+/* タイトル */
+.staff-list__title h1 {
+    font-size: 36px;
+    font-weight: 700;
+}
+
+/* テーブル */
+.staff-table {
+    width: 900px;
+
+    margin: 0 auto;
+
+    background: #fff;
+
+    border-radius: 10px;
+
+    border-collapse: collapse;
+
+    overflow: hidden;
+}
+
+/* ヘッダー */
+.staff-table th {
+    height: 60px;
+
+    border-bottom: 2px solid #E1E1E1;
+
+    color: #737373;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    text-align: center;
+}
+
+/* 中身 */
+.staff-table td {
+    height: 70px;
+
+    border-bottom: 1px solid #E1E1E1;
+
+    text-align: center;
+
+    color: #737373;
+
+    font-size: 24px;
+    font-weight: 700;
+
+    letter-spacing: 0.1em;
+}
+
+/* 詳細 */
+.staff-table td:last-child a {
+    color: #000;
+
+    text-decoration: none;
+
+    font-weight: 700;
+}
+
+.csv-button {
+    margin-top: 40px;
+
+    text-align: right;
+}
+
+.csv-button a {
+    display: inline-flex;
+
+    justify-content: center;
+    align-items: center;
+
+    width: 184px;
+    height: 50px;
+
+    border-radius: 5px;
+
+    background: #000000;
+    color: #FFFFFF;
+
+    text-decoration: none;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    letter-spacing: 0.15em;
+}
+
+/* ========================
+   管理者申請一覧
+======================== */
+
+/* タブ */
+.request-list__tabs {
+    display: flex;
+
+    gap: 60px;
+
+    border-bottom: 1px solid #000;
+
+    padding-bottom: 15px;
+    margin-bottom: 40px;
+}
+
+/* タブ文字 */
+.request-list__tabs a {
+    text-decoration: none;
+
+    color: #737373;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* active */
+.request-list__tabs a.active {
+    color: #000;
+}
+
+
+/* リンク */
+.admin__link {
+    color: #000;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+/* タブ全体 */
+.request-list__tabs {
+
+    width: 900px;
+
+    margin: 0 auto 40px;
+
+    display: flex;
+
+    gap: 70px;
+
+    border-bottom: 1px solid #000;
+
+    padding-bottom: 15px;
+}
+
+/* タブ文字 */
+.request-list__tabs a {
+
+    text-decoration: none;
+
+    color: #737373;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* 選択中 */
+.request-list__tabs a.active {
+    color: #000;
+}
+
+/* タイトル */
+.attendance-list__title {
+
+    width: 900px;
+
+    margin: 80px auto 60px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+}
+
+/* 承認ボタン */
+.approve-button {
+    width: 130px;
+    height: 50px;
+
+    background: #000;
+    color: #fff;
+
+    border: none;
+    border-radius: 5px;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+/* 承認済み */
+.attendance-detail__submit.attendance-detail__submit--approved {
+    background: #696969 !important;
+    color: #fff !important;
+
+    border: none;
+
+    cursor: default;
+}

@@ -52,38 +52,32 @@ php artisan storage:link
 
 ## テスト環境構築
 
-テスト用データベースの作成
+Laravelプロジェクト直下でテスト用の.envファイルを作成
 
-```
-docker-compose exec mysql bash
-mysql -u root -p
-CREATE DATABASE demo_test;
-```
-
-srcディレクトリでテスト用の.envファイルの作成
-
-```
+```bash
 cp .env .env.testing
 ```
 
-```
+.env.testing を以下のように修正
+
+```env
 APP_ENV=test
-DB_DATABASE=demo_test
-DB_USERNAME=root
-DB_PASSWORD=root
+APP_KEY=
+
+DB_CONNECTION=sqlite
+DB_DATABASE=:memory:
 ```
 
-テスト用のテーブルの作成
+APP_KEY は key:generate コマンドで自動生成されます
+テスト用アプリケーションキーを生成
 
-```
-docker-compose exec php bash
+```bash
 php artisan key:generate --env=testing
-php artisan migrate --env=testing
 ```
 
 テストの実行
 
-```
+```bash
 php artisan test
 ```
 
@@ -111,8 +105,19 @@ nginx：1.21.1
 
 ## URL
 
-```
-トップページ：http://localhost/
-会員登録：http://localhost/register
-ログイン：http://localhost/login
+```text
+一般ユーザー会員登録画面
+http://localhost/register
+
+一般ユーザーログイン画面
+http://localhost/login
+
+一般ユーザー勤怠登録画面
+http://localhost/attendance
+
+管理者ログイン画面
+http://localhost/admin/login
+
+管理者勤怠一覧画面
+http://localhost/admin/attendance/list
 ```

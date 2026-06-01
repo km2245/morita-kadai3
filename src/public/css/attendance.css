@@ -1,0 +1,424 @@
+body {
+    background: #F0EFF2;
+}
+
+/* =========================
+   勤怠打刻画面
+========================= */
+
+.attendance {
+    text-align: center;
+    margin-top: 120px;
+}
+
+/* ステータス */
+.attendance__status {
+    margin-bottom: 30px;
+}
+
+/* ステータスバッジ */
+.attendance__status--badge {
+    display: inline-block;
+
+    padding: 8px 20px;
+
+    border-radius: 50px;
+
+    background: #C8C8C8;
+    color: #696969;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* 日付 */
+.attendance__date {
+    font-size: 40px;
+    font-weight: 400;
+
+    margin-bottom: 30px;
+}
+
+/* 時刻 */
+.attendance__time {
+    font-size: 80px;
+    font-weight: 700;
+
+    margin-bottom: 50px;
+}
+
+/* ボタン */
+.attendance__buttons {
+    display: flex;
+    justify-content: center;
+    gap: 82px;
+}
+
+/* ボタン共通 */
+.attendance__button {
+    width: 221px;
+    height: 77px;
+
+    border-radius: 20px;
+
+    font-size: 32px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+/* 黒ボタン */
+.attendance__button--primary {
+    background: #000;
+    color: #fff;
+
+    border: none;
+}
+
+/* 白ボタン */
+.attendance__button--white {
+    background: #fff;
+    color: #000;
+
+    border: 1px solid #ccc;
+}
+
+/* メッセージ */
+.attendance__message {
+    margin-top: 60px;
+
+    font-size: 26px;
+    font-weight: 700;
+}
+
+/* =========================
+   勤怠一覧
+========================= */
+
+.attendance-list {
+    width: 900px;
+
+    margin: 60px auto;
+}
+
+/* タイトル */
+.attendance-list__title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    margin-bottom: 60px;
+}
+
+/* 左の棒 */
+.attendance-list__line {
+    width: 8px;
+    height: 52px;
+
+    background: #000;
+}
+
+/* タイトル文字 */
+.attendance-list__title h1 {
+    font-size: 36px;
+    font-weight: 700;
+}
+
+/* 月移動バー */
+.attendance-list__month {
+    width: 100%;
+    height: 60px;
+
+    background: #fff;
+
+    border-radius: 10px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 30px;
+
+    margin-bottom: 40px;
+
+    box-sizing: border-box;
+}
+
+/* 前月・翌月 */
+.month-link {
+    text-decoration: none;
+
+    color: #737373;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* 真ん中 */
+.attendance-list__month-center {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* カレンダー画像 */
+.attendance-list__month-center img {
+    width: 25px;
+    height: 25px;
+}
+
+/* 月 */
+.attendance-list__month-center p {
+    font-size: 20px;
+    font-weight: 700;
+
+    color: #000;
+}
+
+/* テーブル */
+.attendance-table {
+    width: 100%;
+
+    background: #fff;
+
+    border-radius: 10px;
+
+    border-collapse: collapse;
+
+    overflow: hidden;
+}
+
+/* ヘッダー */
+.attendance-table th {
+    height: 60px;
+
+    border-bottom: 2px solid #E1E1E1;
+
+    color: #737373;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    letter-spacing: 0.15em;
+
+    text-align: center;
+}
+
+/* データ */
+.attendance-table td {
+    height: 70px;
+
+    border-bottom: 1px solid #E1E1E1;
+
+    text-align: center;
+
+    color: #737373;
+
+    font-size: 24px;
+    font-weight: 700;
+
+    letter-spacing: 0.15em;
+}
+
+/* 詳細だけ黒 */
+.attendance-table td:last-child,
+.attendance-table td:last-child a {
+    color: #000;
+
+    text-decoration: none;
+
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* =========================
+   勤怠詳細
+========================= */
+
+.attendance-detail {
+    width: 900px;
+    margin: 60px auto;
+}
+
+/* タイトル */
+.attendance-detail__title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    margin-bottom: 60px;
+}
+
+.attendance-detail__line {
+    width: 8px;
+    height: 52px;
+
+    background: #000;
+}
+
+.attendance-detail__title h1 {
+    font-size: 36px;
+    font-weight: 700;
+}
+
+/* テーブル */
+.attendance-detail__table {
+    width: 100%;
+
+    background: #fff;
+
+    border-radius: 10px;
+
+    border-collapse: collapse;
+
+    overflow: hidden;
+}
+
+/* 行 */
+.attendance-detail__table tr {
+    border-bottom: 1px solid #E1E1E1;
+}
+
+/* 左 */
+.attendance-detail__table th {
+    width: 30%;
+
+    padding: 40px;
+
+    color: #737373;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    text-align: left;
+}
+
+/* 右 */
+.attendance-detail__table td {
+    padding: 30px 0;
+
+    font-size: 24px;
+    font-weight: 700;
+
+    text-align: center;
+}
+
+.attendance-detail__table td[colspan="3"] {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* input */
+.attendance-detail__table input {
+    width: 103px;
+    height: 28px;
+
+    border: 1px solid #D9D9D9;
+    border-radius: 4px;
+
+    text-align: center;
+
+    font-size: 24px;
+    font-weight: 700;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+/* 時計マーク消す */
+.attendance-detail__table input[type="time"]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+/* textarea */
+.attendance-detail__textarea {
+    width: 316px;
+    height: 72px;
+
+    border: 1px solid #D9D9D9;
+    border-radius: 4px;
+
+    resize: none;
+
+    padding: 10px;
+
+    font-size: 14px;
+}
+
+/* ボタン */
+.attendance-detail__button {
+    margin-top: 40px;
+
+    text-align: right;
+}
+
+.attendance-detail__button button {
+    width: 130px;
+    height: 50px;
+
+    background: #000;
+    color: #fff;
+
+    border: none;
+    border-radius: 5px;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+/* 承認待ちメッセージ */
+.attendance-detail__pending {
+    color: #FF0000;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    letter-spacing: 0.15em;
+
+    text-align: right;
+
+    margin-top: 20px;
+}
+
+/* 日付 */
+.attendance-detail__date {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 80px;
+}
+
+
+
+/* 承認済みボタン */
+.attendance-detail__submit--approved {
+    background: #696969 !important;
+    color: #FFFFFF !important;
+}
+
+/* 時間行 */
+.attendance-detail__time {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 60px;
+
+    width: 100%;
+}
+
+/* 波線 */
+.attendance-detail__wave {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 10px;
+
+    line-height: 1;
+}

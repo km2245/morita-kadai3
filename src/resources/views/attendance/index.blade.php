@@ -1,68 +1,94 @@
 @extends('layouts.app')
 
+@section('css')
+<link rel="stylesheet" href="{{ asset('css/attendance.css') }}">
+@endsection
+
 @section('content')
 
-<h2>{{ $now->format('Y年n月j日') }}</h2>
-
-<p>
-    {{ ['日', '月', '火', '水', '木', '金', '土'][$now->dayOfWeek] }}
-</p>
-
-<h1>{{ $now->format('H:i') }}</h1>
-
-@if (!$attendance)
-
-{{-- まだ出勤していない → 勤務外 --}}
-<p>勤務外</p>
-
-@elseif ($attendance->status === 'working')
-
-{{-- 勤務中 --}}
-<p>出勤中</p>
-
-@elseif ($attendance->status === 'break')
-
-{{-- 休憩中 --}}
-<p>休憩中</p>
-
-@elseif ($attendance->status === 'finished')
-
-{{-- 退勤済み --}}
-<p>退勤済</p>
-<p>お疲れ様でした。</p>
-
-@endif
+<div class="attendance">
 
 
-@if (!$attendance)
+    {{-- ステータス --}}
+    <p class="attendance__status attendance__status--badge">
+        @if (!$attendance)
+        勤務外
+        @elseif ($attendance->status === 'working')
+        出勤中
+        @elseif ($attendance->status === 'break')
+        休憩中
+        @elseif ($attendance->status === 'finished')
+        退勤済
+        @endif
+    </p>
 
-{{-- 出勤前 → 出勤ボタンだけ --}}
-<form action="{{ route('attendance.store') }}" method="POST">
-    @csrf
-    <button type="submit">出勤</button>
-</form>
 
-@elseif ($attendance->status === 'working')
+    {{-- 日付 --}}
+    <p class="attendance__date">
+        {{ $now->format('Y年n月j日') }}（{{ ['日','月','火','水','木','金','土'][$now->dayOfWeek] }}）
+    </p>
 
-{{-- 勤務中 → 休憩入・退勤 --}}
-<form action="{{ route('attendance.break.start') }}" method="POST">
-    @csrf
-    <button type="submit">休憩入</button>
-</form>
+    {{-- 時刻 --}}
+    <h1 class="attendance__time">
+        {{ $now->format('H:i') }}
+    </h1>
 
-<form action="{{ route('attendance.leave') }}" method="POST">
-    @csrf
-    <button type="submit">退勤</button>
-</form>
 
-@elseif ($attendance->status === 'break')
 
-{{-- 休憩中 → 休憩戻 --}}
-<form action="{{ route('attendance.break.end') }}" method="POST">
-    @csrf
-    <button type="submit">休憩戻</button>
-</form>
+    {{-- ボタン --}}
+    <div class="attendance__buttons">
 
-@endif
+        @if (!$attendance)
+
+        {{-- 出勤前 --}}
+        <form action="{{ route('attendance.store') }}" method="POST">
+            @csrf
+            <button class="attendance__button attendance__button--primary">
+                出勤
+            </button>
+        </form>
+
+        @elseif ($attendance->status === 'working')
+
+        {{-- 勤務中 --}}
+        <form action="{{ route('attendance.leave') }}" method="POST">
+            @csrf
+            <button class="attendance__button attendance__button--primary">
+                退勤
+            </button>
+        </form>
+
+        <form action="{{ route('attendance.break.start') }}" method="POST">
+            @csrf
+            <button class="attendance__button attendance__button--white">
+                休憩入
+            </button>
+        </form>
+
+        @elseif ($attendance->status === 'break')
+
+        {{-- 休憩中 --}}
+        <form action="{{ route('attendance.break.end') }}" method="POST">
+            @csrf
+            <button class="attendance__button attendance__button--white">
+                休憩戻
+            </button>
+        </form>
+
+        @elseif ($attendance->status === 'finished')
+
+        <p class="attendance__message">
+            お疲れ様でした。
+        </p>
+
+        
+        @endif
+
+
+
+
+    </div>
+
+</div>
 
 @endsection

@@ -6,31 +6,75 @@
 
 @section('content')
 
-<h1>管理者ログイン</h1>
+<div class="login">
 
-<form method="POST" action="{{ route('admin.login.post') }}">
-    @csrf
-
-    <div>
-        <label>メールアドレス</label><br>
-        <input type="email" name="email">
-        @error('email')
-        <p class="error-message">{{ $message }}</p>
-        @enderror
+    {{-- タイトル --}}
+    <div class="login-form__heading">
+        <h1 class="login__title">
+            管理者ログイン
+        </h1>
     </div>
 
-    <br>
+    {{-- フォーム --}}
+    <form
+        class="form"
+        action="{{ route('admin.login') }}"
+        method="post" novalidate>
 
-    <div>
-        <label>パスワード</label><br>
-        <input type="password" name="password">
-    </div>
+        @csrf
 
-    <br>
+        {{-- メール --}}
+        <div class="form__group">
 
-    <button type="submit">
-        ログインする
-    </button>
-</form>
+            <label class="form__label">
+                メールアドレス
+            </label>
+
+            <input
+                class="form__input"
+                type="email"
+                name="email"
+                value="{{ old('email') }}">
+
+            @error('email')
+            <p class="error-message">
+                {{ $message }}
+            </p>
+            @enderror
+
+        </div>
+
+        {{-- パスワード --}}
+        <div class="form__group">
+
+            <label class="form__label">
+                パスワード
+            </label>
+
+            <input
+                class="form__input"
+                type="password"
+                name="password">
+
+            @error('password')
+            <p class="error-message">
+                {{ $message }}
+            </p>
+            @enderror
+
+        </div>
+
+        {{-- ボタン --}}
+        <button
+            class="login__button"
+            type="submit">
+
+            管理者ログインする
+
+        </button>
+
+    </form>
+
+</div>
 
 @endsection

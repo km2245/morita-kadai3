@@ -15,6 +15,8 @@ class AdminLoginController extends Controller
         // role = admin を追加して管理者だけログイン可能にする
         $credentials['role'] = 'admin';
 
+        $request->session()->regenerate();
+
         // ログイン判定
         if (!Auth::attempt($credentials)) {
 
@@ -25,6 +27,6 @@ class AdminLoginController extends Controller
         }
 
         // 成功したら管理画面へ
-        return redirect()->route('attendance.index');
+        return redirect()->route('admin.attendance.list');
     }
 }

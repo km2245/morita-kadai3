@@ -1,0 +1,44 @@
+.verify {
+    width: 680px;
+    margin: 250px auto 0;
+    text-align: center;
+}
+
+.verify__text {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 150%;
+    margin-bottom: 60px;
+}
+
+.verify__button {
+    display: inline-block;
+
+    width: 257px;
+    height: 69px;
+    line-height: 69px;
+
+    background: #D9D9D9;
+    color: #000;
+
+    border: 1px solid #000;
+    border-radius: 10px;
+
+    font-size: 30px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    margin-bottom: 40px;
+}
+
+.verify__resend {
+    border: none;
+    background: transparent;
+
+    color: #0073CC;
+
+    font-size: 20px;
+
+    cursor: pointer;
+}

@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Attendance;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Models\StampCorrectionRequest;
 use App\Http\Requests\CorrectionRequest;
 use App\Models\User;
+use Carbon\Carbon;
+
 
 class AttendanceController extends Controller
 {
@@ -142,58 +145,113 @@ class AttendanceController extends Controller
         // 処理後、元の画面に戻る
         return back();
     }
+
     public function index(Request $request)
     {
-        // 表示する月を取得（なければ今月）
+        // 表示する月
         $month = $request->input('month', now()->format('Y-m'));
 
-        // ログイン中ユーザーの
-        // 指定された月の勤怠一覧を取得
-        $attendances = Attendance::where('user_id', auth()->id())
+        // 勤怠取得
+        $attendances = Attendance::with('breaks')
+            ->where('user_id', auth()->id())
             ->where('date', 'like', $month . '%')
             ->orderBy('date', 'desc')
             ->get();
 
-        // ビューに渡す
-        return view('attendance.list', compact('attendances', 'month'));
+        // 休憩時間と勤務時間を計算
+        foreach ($attendances as $attendance) {
+
+            // =========================
+            // 休憩合計
+            // =========================
+            $totalBreakMinutes = 0;
+
+            foreach ($attendance->breaks as $break) {
+
+                if ($break->start_time && $break->end_time) {
+
+                    $start = strtotime($break->start_time);
+                    $end = strtotime($break->end_time);
+
+                    $totalBreakMinutes += ($end - $start) / 60;
+                }
+            }
+
+            // 「1:00」形式にする
+            $attendance->break_total =
+                floor($totalBreakMinutes / 60)
+                . ':'
+                . str_pad($totalBreakMinutes % 60, 2, '0', STR_PAD_LEFT);
+
+            // =========================
+            // 勤務合計
+            // =========================
+            if ($attendance->start_time && $attendance->end_time) {
+
+                $workStart = strtotime($attendance->start_time);
+                $workEnd = strtotime($attendance->end_time);
+
+                // 勤務時間（分）
+                $workMinutes =
+                    (($workEnd - $workStart) / 60)
+                    - $totalBreakMinutes;
+
+                // 「8:00」形式
+                $attendance->work_total =
+                    floor($workMinutes / 60)
+                    . ':'
+                    . str_pad($workMinutes % 60, 2, '0', STR_PAD_LEFT);
+            } else {
+
+                $attendance->work_total = '';
+            }
+        }
+
+        return view(
+            'attendance.list',
+            compact('attendances', 'month')
+        );
     }
 
     public function show($id)
     {
-        // 選択された勤怠データを取得
-        // breaks（休憩）も一緒に取得する
-        $attendance = Attendance::with('breaks')
-            ->findOrFail($id);
+        $attendance = Attendance::with([
+            'breaks',
+            'stampCorrectionRequests'
+        ])->findOrFail($id);
 
-        // 詳細画面に渡す
-        return view('attendance.detail', compact('attendance'));
+        // 承認待ちがあるか
+        $isPending =
+            $attendance->stampCorrectionRequests()
+            ->where('status', 'pending')
+            ->exists();
+
+        return view(
+            'attendance.detail',
+            compact('attendance', 'isPending')
+        );
     }
+
     public function requestCorrection(CorrectionRequest $request, $id)
     {
         // 対象の勤怠データを取得
         $attendance = Attendance::findOrFail($id);
 
+
         // 修正申請テーブルに保存
         StampCorrectionRequest::create([
-
-            // ログイン中ユーザー
             'user_id' => auth()->id(),
 
-            // 対象の勤怠ID
             'attendance_id' => $attendance->id,
 
-            // 今回は修正前 = 修正後で仮保存
-            // （あとでフォーム入力にする）
             'before_start_time' => $attendance->start_time,
-            'after_start_time' => $attendance->start_time,
-
             'before_end_time' => $attendance->end_time,
-            'after_end_time' => $attendance->end_time,
 
-            // 備考（修正理由）
+            'after_start_time' => $request->start_time,
+            'after_end_time' => $request->end_time,
+
             'reason' => $request->reason,
 
-            // 最初は承認待ち
             'status' => 'pending',
         ]);
 
@@ -215,15 +273,36 @@ class AttendanceController extends Controller
         // ビューに渡す
         return view('attendance.request-list', compact('requests', 'tab'));
     }
-    public function adminIndex()
+    public function adminIndex(Request $request)
     {
-        // role が user の一般ユーザーだけ取得
-        $users = User::where('role', 'user')
-            ->with('attendances')
+        // 日付取得
+        $date = $request->input('date', now()->format('Y-m-d'));
+
+        // 前日
+        $prevDate = \Carbon\Carbon::parse($date)
+            ->subDay()
+            ->format('Y-m-d');
+
+        // 翌日
+        $nextDate = \Carbon\Carbon::parse($date)
+            ->addDay()
+            ->format('Y-m-d');
+
+        // その日の勤怠一覧取得
+        $attendances = Attendance::with('user', 'breaks')
+            ->where('date', $date)
             ->get();
 
         // 管理者用一覧画面に渡す
-        return view('admin.attendance-list', compact('users'));
+        return view(
+            'admin.attendance-list',
+            compact(
+                'attendances',
+                'date',
+                'prevDate',
+                'nextDate'
+            )
+        );
     }
     public function staffList()
     {
@@ -235,39 +314,193 @@ class AttendanceController extends Controller
         // スタッフ一覧画面へ渡す
         return view('admin.staff-list', compact('users'));
     }
-    public function staffAttendance($id)
+
+    public function staffAttendance(Request $request, $id)
     {
-        // 対象スタッフを取得
+        // スタッフ取得
         $user = User::findOrFail($id);
 
-        // そのスタッフの勤怠一覧を取得
-        $attendances = Attendance::where('user_id', $user->id)
-            ->orderBy('date', 'desc')
+        // 月取得
+        $month = $request->input('month', now()->format('Y-m'));
+
+        // 勤怠取得
+        $attendances = Attendance::with('breaks')
+            ->where('user_id', $user->id)
+            ->where('date', 'like', $month . '%')
+            ->orderBy('date', 'asc')
             ->get();
 
-        // ビューに渡す
-        return view('admin.staff-attendance', compact('user', 'attendances'));
-    }
-    public function approvePage($id)
-    {
-        // 修正申請データを取得
-        $request = StampCorrectionRequest::with(['user', 'attendance'])
-            ->findOrFail($id);
+        // 前月
+        $prevMonth = Carbon::parse($month . '-01')
+            ->subMonth()
+            ->format('Y-m');
 
-        // 承認画面へ渡す
-        return view('admin.approve', compact('request'));
+        // 翌月
+        $nextMonth = Carbon::parse($month . '-01')
+            ->addMonth()
+            ->format('Y-m');
+
+        return view(
+            'admin.staff-attendance',
+            compact(
+                'user',
+                'attendances',
+                'month',
+                'prevMonth',
+                'nextMonth'
+            )
+        );
+    }
+
+    public function exportCsv(Request $request, $id)
+    {
+        // スタッフ取得
+        $user = User::findOrFail($id);
+
+        // 月取得
+        $month = $request->input('month', now()->format('Y-m'));
+
+        // 勤怠取得
+        $attendances = Attendance::with('breaks')
+            ->where('user_id', $user->id)
+            ->where('date', 'like', $month . '%')
+            ->orderBy('date', 'asc')
+            ->get();
+
+        // CSVレスポンス
+        $response = new StreamedResponse(function () use ($attendances) {
+
+            $handle = fopen('php://output', 'w');
+
+            // ヘッダー
+            fputcsv($handle, [
+                '日付',
+                '出勤',
+                '退勤',
+                '休憩',
+                '合計'
+            ]);
+
+            foreach ($attendances as $attendance) {
+
+                // 休憩合計
+                $breakMinutes = 0;
+
+                foreach ($attendance->breaks as $break) {
+
+                    if ($break->start_time && $break->end_time) {
+
+                        $start = Carbon::parse($break->start_time);
+                        $end = Carbon::parse($break->end_time);
+
+                        $breakMinutes += $end->diffInMinutes($start);
+                    }
+                }
+
+                // 勤務時間
+                $workTime = '';
+
+                if ($attendance->start_time && $attendance->end_time) {
+
+                    $start = Carbon::parse($attendance->start_time);
+                    $end = Carbon::parse($attendance->end_time);
+
+                    $totalMinutes =
+                        $end->diffInMinutes($start) - $breakMinutes;
+
+                    $hours = floor($totalMinutes / 60);
+                    $minutes = $totalMinutes % 60;
+
+                    $workTime =
+                        sprintf('%d:%02d', $hours, $minutes);
+                }
+
+                // CSV行
+                fputcsv($handle, [
+
+                    $attendance->date,
+
+                    $attendance->start_time
+                        ? Carbon::parse($attendance->start_time)->format('H:i')
+                        : '',
+
+                    $attendance->end_time
+                        ? Carbon::parse($attendance->end_time)->format('H:i')
+                        : '',
+
+                    $breakMinutes > 0
+                        ? floor($breakMinutes / 60)
+                        . ':'
+                        . sprintf('%02d', $breakMinutes % 60)
+                        : '',
+
+                    $workTime
+                ]);
+            }
+
+            fclose($handle);
+        });
+
+        // ダウンロード名
+        $fileName =
+            $user->name . '_' . $month . '_attendance.csv';
+
+        $response->headers->set(
+            'Content-Type',
+            'text/csv'
+        );
+
+        $response->headers->set(
+            'Content-Disposition',
+            'attachment; filename="' . $fileName . '"'
+        );
+
+        return $response;
     }
     public function approveRequest($id)
     {
-        // 対象の修正申請を取得
         $request = StampCorrectionRequest::findOrFail($id);
 
-        // status を approved に更新
-        $request->update([
-            'status' => 'approved',
-        ]);
+        $request->status = 'approved';
 
-        // 承認後、管理者申請一覧へ戻る
-        return redirect()->route('admin.request.list');
+        $request->save();
+
+        return redirect()->back();
+    }
+    public function adminRequestList(Request $request)
+    {
+        // tab取得
+        $tab = $request->input('tab', 'pending');
+
+        // 修正申請一覧取得
+        $requests = StampCorrectionRequest::with(['user', 'attendance'])
+            ->where('status', $tab)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // ビューへ
+        return view(
+            'admin.request-list',
+            compact('requests', 'tab')
+        );
+    }
+
+    public function approvePage($id)
+    {
+        // 修正申請取得
+        $request = StampCorrectionRequest::with([
+            'user',
+            'attendance',
+            'attendance.breaks'
+        ])->findOrFail($id);
+
+        // 勤怠取得
+        $attendance = $request->attendance;
+
+        // 画面表示
+        return view(
+            'admin.approve',
+            compact('request', 'attendance')
+        );
     }
 }
